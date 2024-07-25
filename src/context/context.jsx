@@ -8,7 +8,9 @@ const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useLocalStorage("user", null);
   const [token, setToken] = useLocalStorage("token", null);
-
+  const [chats, setChats] = useState();
+  const [selectedChat, setSelectedChat] = useState();
+  6;
   return (
     <AuthContext.Provider
       value={{
@@ -18,6 +20,10 @@ const AuthProvider = ({ children }) => {
         setUser,
         token,
         setToken,
+        chats,
+        setChats,
+        selectedChat,
+        setSelectedChat,
       }}
     >
       {children}

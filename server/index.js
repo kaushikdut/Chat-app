@@ -4,6 +4,9 @@ import cors from "cors";
 import router from "./routes/user.js";
 import bodyParser from "body-parser";
 import mongoDBConnect from "./mongoDB/connection.js";
+import authenticateUser from "./middleware/auth.js";
+import chatRouter from "./routes/chat.js";
+import messageRouter from "./routes/message.js";
 
 const app = express();
 
@@ -20,6 +23,8 @@ app.use(
 );
 
 app.use("/", router);
+app.use("/chat", authenticateUser, chatRouter);
+app.use("/message", authenticateUser, messageRouter);
 
 mongoDBConnect();
 

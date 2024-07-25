@@ -16,8 +16,8 @@ export const login = async (req, res) => {
       res.status(400).send({ message: "Wrong password!" });
     }
 
-    const token = jwt.sign({ userId: user._Id }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "24h",
     });
 
     res.status(200).send({
@@ -59,8 +59,8 @@ export const register = async (req, res) => {
 
     await newUser.save();
 
-    const token = jwt.sign({ userId: newUser._id }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "24h",
     });
 
     res.status(200).send({
@@ -73,5 +73,25 @@ export const register = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error!");
+  }
+};
+
+export const searchUser = async (req, res) => {
+  const { search } = req.query;
+
+  const user = await User.find({
+    name: { $regex: search, $options: "i" },
+  }).select("name _id email");
+
+  res.status(200).json(user);
+};
+
+export const getUsers = async (req, res) => {
+  try {
+    const user = await User.find({}, "-password");
+    res.status(200).json(user); // Use res.status(200).json(user) to send status and JSON together
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };

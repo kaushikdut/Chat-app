@@ -12,7 +12,6 @@ import Chat from "./pages/chat";
 function App() {
   const { user, isAuthenticated } = useAuthContext();
 
-  console.log(user);
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center">
       <Routes>

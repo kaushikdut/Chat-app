@@ -67,9 +67,9 @@ function Register() {
           const { token } = response.data;
           setToken(token);
 
-          // setTimeout(() => {
-          //   navigate("/login");
-          // }, 4000);
+          setTimeout(() => {
+            navigate("/login");
+          }, 4000);
         })
         .catch((err) => {
           console.log(err);
@@ -103,6 +103,12 @@ function Register() {
     }
   };
 
+  const handleKeydown = (e) => {
+    if (e.key === "Enter") {
+      handleSubmit(e);
+    }
+  };
+
   return (
     <div
       className="w-screen h-full flex items-center justify-center"
@@ -125,6 +131,7 @@ function Register() {
               type="text"
               onChange={handleChange}
               value={formdata.name}
+              onKeyDown={handleKeydown}
             />
           </div>
           <div className="relative z-10 ">
@@ -135,6 +142,7 @@ function Register() {
               type="email"
               onChange={handleChange}
               value={formdata.email}
+              onKeyDown={handleKeydown}
             />
           </div>
 
@@ -146,6 +154,7 @@ function Register() {
               type={viewPassword ? "text" : "password"}
               onChange={handleChange}
               value={formdata.password}
+              onKeyDown={handleKeydown}
             />
             <span
               role="button"
@@ -167,6 +176,7 @@ function Register() {
               type={viewPasswordConfrim ? "text" : "password"}
               onChange={handleChange}
               value={formdata.confirmedPassword}
+              onKeyDown={handleKeydown}
             />
             <span
               role="button"

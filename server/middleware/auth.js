@@ -15,7 +15,11 @@ const auth = async (req, res, next) => {
 
     next();
   } catch (error) {
-    res.status(401).send("Authentication Invalid 2");
+    if (error instanceof jwt.TokenExpiredError) {
+      res.status(401).send("Authentication Invalid: Jwt token expired!");
+    } else {
+      res.status(401).send("Authentication Invalid 2");
+    }
     console.log(error);
   }
 };

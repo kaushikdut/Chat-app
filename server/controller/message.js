@@ -17,15 +17,15 @@ export const sendMessage = async (req, res) => {
     let newMessage = {
       sender: req.user.id,
       message: message,
-      chat: chatId,
+      receiver: chatId,
     };
 
     let m = await Message.create(newMessage);
 
     m = await m.populate("sender", "name email");
-    m = await m.populate("chat", "name users");
+    m = await m.populate("receiver", "-password");
 
-    await Chat.findByIdAndUpdate(chatId, { latestMessage: m }, { new: true });
+    // await Chat.findByIdAndUpdate(chatId, { latestMessage: m }, { new: true });
 
     res.status(200).json(m);
   } catch (error) {
@@ -36,10 +36,16 @@ export const sendMessage = async (req, res) => {
 export const allMessages = async (req, res) => {
   try {
     const { chatId } = req.params;
+    const userId = req.user.id;
 
-    const getMessage = await Message.find({ chat: chatId })
+    const getMessage = await Message.find({
+      $and: [
+        { $or: [{ sender: chatId }, { receiver: chatId }] },
+        { $or: [{ sender: userId }, { receiver: userId }] },
+      ],
+    })
       .populate("sender", "name email")
-      .populate("chat", "name users");
+      .populate("receiver", "name email");
 
     res.status(200).json(getMessage);
   } catch (error) {

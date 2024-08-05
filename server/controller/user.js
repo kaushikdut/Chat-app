@@ -95,3 +95,14 @@ export const getUsers = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const getUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId, "-password");
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

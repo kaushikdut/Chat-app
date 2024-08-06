@@ -1,3 +1,10 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
+  "headers": [
+    {
+      "for": "/auth/register",
+      "key": "Access-Control-Allow-Origin",
+      "value": "https://chat-app-navy-eight.vercel.app"
+    }
+  ]
 }

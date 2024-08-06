@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: "*",
+    credentials: false,
   })
 );
 
@@ -36,7 +37,7 @@ const server = createServer(app);
 const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
-    origin: [process.env.CLIENT_URL, "https://admin.socket.io"],
+    origin: ["*", "https://admin.socket.io"],
   },
 });
 

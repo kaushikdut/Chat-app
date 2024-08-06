@@ -19,12 +19,7 @@ const PORT = process.env.PORT || 8000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: "*",
-    credentials: false,
-  })
-);
+app.use(cors());
 
 app.use("/", router);
 app.use("/chat", authenticateUser, chatRouter);
@@ -36,9 +31,6 @@ const server = createServer(app);
 
 const io = new Server(server, {
   pingTimeout: 60000,
-  cors: {
-    origin: ["*", "https://admin.socket.io"],
-  },
 });
 
 instrument(io, {

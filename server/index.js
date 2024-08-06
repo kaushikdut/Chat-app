@@ -47,68 +47,6 @@ instrument(io, {
   mode: "development",
 });
 
-// io.on("connection", (socket) => {
-//   console.log("A user connected:", socket.id);
-
-//   socket.emit("connected", socket.id);
-
-//   const room = 1;
-//   let onlineUser = [];
-
-//   socket.on("join", () => {
-//     console.log(`joined room: ${room}`);
-//     socket.join(room);
-//     socket.to(room).emit("update", "Hey updated event triggered");
-//   });
-
-//   socket.on("online", async (userDataId) => {
-//     const updatedUser = await User.findByIdAndUpdate(userDataId, {
-//       online: true,
-//     });
-
-//     const { _id: userId, online } = updatedUser;
-
-//     const userIndex = onlineUser.findIndex((user) =>
-//       user.userId.equals(userId)
-//     );
-//     if (userIndex === -1) {
-//       // If the user is not found, add them to the array
-//       onlineUser.push({ userId, online });
-//       console.log(`User added: ${userId}`);
-//       socket.emit("updateOnlineStatus", onlineUser);
-//     }
-//   });
-
-//   socket.on("offline", async (userDataId) => {
-//     const updatedUser = await User.findByIdAndUpdate(userDataId, {
-//       online: false,
-//     });
-
-//     const { _id: userId, online } = updatedUser;
-
-//     const userIndex = onlineUser.findIndex((user) =>
-//       user.userId.equals(userId)
-//     );
-//     if (userIndex !== -1) {
-//       // If the user is found, remove them from the array
-//       onlineUser.splice(userIndex, 1);
-//       console.log(`User removed: ${userId}`);
-//       socket.emit("updateOnlineStatus", onlineUser);
-//     }
-
-//     // socket.emit("updateOnlineStatus", online, userId);
-//   });
-
-//   // socket.on("setup", (userData) => {
-//   //   socket.join(userData.id);
-//   //   console.log(userData.id + " connected");
-//   // });
-
-//   socket.on("disconnect", () => {
-//     console.log("A user disconnected:", socket.id);
-//   });
-// });
-
 let onlineUsers = [];
 
 io.on("connection", (socket) => {
@@ -151,6 +89,10 @@ io.on("connection", (socket) => {
 
   socket.on("stop-typing", (room) => {
     socket.in(room).emit("stop-typing");
+  });
+
+  socket.on("new-message", (room) => {
+    socket.broadcast.to(room).emit("new-message");
   });
 
   socket.on("disconnect", () => {

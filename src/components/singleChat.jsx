@@ -2,14 +2,22 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../context/context";
 import ScrollableChats from "./scrollableChats";
-import Sidebar from "./sidebar";
+import { GoDotFill } from "react-icons/go";
+import { useSocket } from "../context/socket";
 
 const SingleChat = () => {
   const inputRef = useRef(null);
   const [message, setMessage] = useState("");
   const [fetchedMessage, setFetchedMessage] = useState([]);
+  const [fetchedUser, setFetchedUser] = useState();
+  const [isTyping, setIsTyping] = useState(false);
   const url = import.meta.env.VITE_SERVER;
   const { selectedChat, token } = useAuthContext();
+  const [typingUser, setTypingUser] = useState("");
+  const [typingTimer, setTypingTimer] = useState(null);
+
+  const { user } = useAuthContext();
+  const { socket, onlineUser, isConnected } = useSocket();
 
   const handleFocus = () => {
     if (inputRef.current) {
@@ -21,6 +29,22 @@ const SingleChat = () => {
     setTimeout(handleFocus, 0);
   };
 
+  const fetchUser = async () => {
+    if (!selectedChat) return;
+    try {
+      const response = await axios.get(`${url}/auth/user/${selectedChat._id}`);
+      const { data } = response;
+      if (data) {
+        setFetchedUser((prev) => ({
+          ...prev,
+          online: data.online,
+        }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const fetchMessages = async () => {
     try {
       await axios
@@ -29,11 +53,9 @@ const SingleChat = () => {
             Authorization: `Bearer ${token}`,
           },
         })
-        .then((data) => {
-          setFetchedMessage(data.data);
+        .then((response) => {
+          setFetchedMessage(response.data);
         });
-
-      // console.log("User joined" + selectedChat._id);
     } catch (error) {
       console.log(error);
     }
@@ -56,6 +78,7 @@ const SingleChat = () => {
             }
           )
           .then((response) => {
+            socket.current.emit("new-message", user.id);
             fetchMessages();
             setMessage("");
             console.log(response.data);
@@ -68,21 +91,63 @@ const SingleChat = () => {
 
   const handleChange = (e) => {
     setMessage(e.target.value);
+
+    clearTimeout(typingTimer);
+    if (!isTyping) {
+      socket.current.emit("typing", selectedChat._id, user.id);
+    }
+
+    const newTimer = setTimeout(() => {
+      socket.current.emit("stop-typing", selectedChat._id);
+    }, 1000);
+
+    setTypingTimer(newTimer);
   };
 
   useEffect(() => {
     handleFocus();
     if (selectedChat) {
+      setFetchedUser(selectedChat);
       fetchMessages();
+      fetchUser();
+      socket.current.emit("join-chat", selectedChat._id);
     }
+
+    return () => socket.current.emit("leave-chat", selectedChat._id);
+  }, [selectedChat]);
+
+  useEffect(() => {
+    socket.current.on("typing", (userId) => {
+      setIsTyping(true);
+      setTypingUser(userId);
+    });
+    socket.current.on("stop-typing", () => {
+      setIsTyping(false);
+      setTypingUser("");
+    });
+
+    socket.current.on("new-message", () => fetchMessages());
+
+    return () => {
+      socket.current.off("typing");
+      socket.current.off("stop-typing");
+    };
   }, [selectedChat]);
 
   return (
     <div className="h-full w-full flex flex-col bg-black">
-      {selectedChat ? (
+      {fetchedUser ? (
         <div className="flex flex-col w-full h-full">
           <div className="flex-shrink-0 py-5 px-2 text-start">
-            {selectedChat?.name}
+            {fetchedUser?.name}
+            {onlineUser.some((user) => user.userId === fetchedUser._id) && (
+              <p className="text-xs flex items-center text-green-700">
+                <span>
+                  <GoDotFill fill="green" />
+                </span>
+                {typingUser === selectedChat._id ? "typing..." : "online"}
+              </p>
+            )}
           </div>
           <div className="flex-grow p-2 overflow-auto bg-neutral-950">
             <ScrollableChats messages={fetchedMessage} />

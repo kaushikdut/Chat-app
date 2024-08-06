@@ -18,6 +18,7 @@ function Login() {
   const url = import.meta.env.VITE_SERVER;
 
   const { setToken, setUser, user, setIsAuthenticated } = useAuthContext();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,8 +38,9 @@ function Login() {
       await axios
         .post(`${url}/auth/login`, formdata)
         .then((response) => {
-          console.log(response);
-          toast.success(response.data?.message, {
+          const { token, message, ...other } = response.data;
+
+          toast.success(message, {
             position: "bottom-center",
             hideProgressBar: false,
             closeOnClick: true,
@@ -50,7 +52,6 @@ function Login() {
           });
           toast.clearWaitingQueue();
 
-          const { token, ...other } = response.data;
           setToken(token);
           setUser(other);
           setTimeout(() => navigate("/"), 4000);
@@ -101,7 +102,7 @@ function Login() {
       className="w-screen h-full flex items-center justify-center"
       style={{
         backgroundImage: "url(bg.jpg)",
-        backgroundSize: "cover", // Adjust background properties as needed
+        backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >

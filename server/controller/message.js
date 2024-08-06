@@ -25,8 +25,6 @@ export const sendMessage = async (req, res) => {
     m = await m.populate("sender", "name email");
     m = await m.populate("receiver", "-password");
 
-    // await Chat.findByIdAndUpdate(chatId, { latestMessage: m }, { new: true });
-
     res.status(200).json(m);
   } catch (error) {
     res.status(400).json(error.message);
@@ -51,5 +49,22 @@ export const allMessages = async (req, res) => {
   } catch (error) {
     res.status(400);
     error.message;
+  }
+};
+
+export const chatList = async (req, res) => {
+  try {
+    const { chatId } = req.params;
+    const userId = req.user.id;
+
+    const fetchMessage = await Message.findOne({
+      $and: [
+        { $or: [{ sender: chatId }, { receiver: chatId }] },
+        { $or: [{ sender: userId }, { receiver: userId }] },
+      ],
+    }).sort({ createdAt: -1 });
+    res.status(200).json(fetchMessage);
+  } catch (error) {
+    console.log(error);
   }
 };

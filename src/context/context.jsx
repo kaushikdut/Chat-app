@@ -10,6 +10,7 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useLocalStorage("token", null);
   const [chats, setChats] = useState();
   const [selectedChat, setSelectedChat] = useState();
+
   6;
   return (
     <AuthContext.Provider

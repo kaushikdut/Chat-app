@@ -1,5 +1,3 @@
-import { useContext, useState } from "react";
-
 import "./App.css";
 import { useAuthContext } from "./context/context";
 import Register from "./pages/register";
@@ -10,7 +8,7 @@ import Login from "./pages/login";
 import Chat from "./pages/chat";
 
 function App() {
-  const { user, isAuthenticated } = useAuthContext();
+  const { user } = useAuthContext();
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center">
@@ -29,13 +27,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route
           path="/chat"
-          element={
-            isAuthenticated ? (
-              <Chat />
-            ) : (
-              <Navigate to={"/login"} replace={true} />
-            )
-          }
+          element={user ? <Chat /> : <Navigate to={"/login"} replace={true} />}
         />
       </Routes>
     </div>

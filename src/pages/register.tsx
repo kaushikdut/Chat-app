@@ -52,7 +52,6 @@ function Register() {
       await axios
         .post(`${url}/auth/register`, formdata)
         .then((response) => {
-          console.log(response);
           toast.success(response?.data.message, {
             position: "top-right",
             hideProgressBar: false,

@@ -17,13 +17,12 @@ function Login() {
 
   const url = import.meta.env.VITE_SERVER;
 
-  const { setToken, setUser, user, setIsAuthenticated } = useAuthContext();
+  const { setToken, setUser, user } = useAuthContext();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      setIsAuthenticated(true);
       navigate("/");
     }
   }, [navigate]);

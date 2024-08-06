@@ -3,19 +3,19 @@
 @tailwind utilities;
 @font-face {
   font-family: "Poppin-Regular";
-  src: url("Poppins-Regular.ttf");
+  src: url("/fonts/Poppins-Regular.ttf");
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
   font-family: "Poppin-Bold";
-  src: url("Poppins-Bold.ttf");
+  src: url("/fonts/Poppins-Bold.ttf");
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
   font-family: "Poppin-Medium";
-  src: url("Poppins-Medium.ttf");
+  src: url("/fonts/Poppins-Medium.ttf");
   font-weight: 400;
   font-style: normal;
 }

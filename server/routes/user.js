@@ -5,9 +5,9 @@ import authenticateUser from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("auth/login", login);
-router.post("auth/register", register);
-router.get("auth/users", getUsers);
-router.get("auth/user/:userId", getUser);
+router.post("/auth/login", login);
+router.post("/auth/register", register);
+router.get("/auth/users", getUsers);
+router.get("/auth/user/:userId", getUser);
 
 export default router;

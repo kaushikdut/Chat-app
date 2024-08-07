@@ -9,7 +9,6 @@ import chatRouter from "./routes/chat.js";
 import messageRouter from "./routes/message.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import User from "./models/user.js";
 import { instrument } from "@socket.io/admin-ui";
 
 dotenv.config();
@@ -19,7 +18,12 @@ const PORT = process.env.PORT || 8000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
+);
 
 app.use("/", router);
 app.use("/chat", authenticateUser, chatRouter);
@@ -31,6 +35,10 @@ const server = createServer(app);
 
 const io = new Server(server, {
   pingTimeout: 60000,
+  cors: {
+    origin: [process.env.CLIENT_URL, "https://admin.socket.io"],
+    credentials: true,
+  },
 });
 
 instrument(io, {

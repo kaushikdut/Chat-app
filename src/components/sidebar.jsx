@@ -27,7 +27,7 @@ const Sidebar = () => {
   return (
     <div className=" w-12 h-full flex flex-col bg-neutral-950 justify-end py-4">
       <div onClick={() => setOpen((prev) => !prev)}>
-        <img src="src/assets/profile.jpg" className=" rounded-full" />
+        <img src="/profile.jpg" className=" rounded-full" />
       </div>
       {open && (
         <div className="bg-neutral-800 w-[150px] h-[70px] p-5 flex flex-col items-center justify-center absolute left-10 rounded-lg">

@@ -45,21 +45,23 @@ const ChatList = ({ id, name, image, onClick }) => {
 
   return (
     <div
-      className=" w-full h-[5rem] flex flex-row items-center justify-evenly p-6 bg-neutral-900 cursor-pointer select-none hover:bg-neutral-800"
+      className="w-full h-[5rem] flex flex-row items-center justify-evenly p-6 bg-neutral-900 cursor-pointer select-none hover:bg-neutral-800"
       onClick={onClick}
     >
       <div className="w-full flex gap-x-3 pr-3 justify-center items-center">
-        <img
-          src={image ? image : "src/assets/profile.jpg"}
-          alt="pic"
-          className="rounded-full h-12 w-12"
-        />
-        <div className=" h-full flex flex-col items-start gap-1">
-          <div> {name}</div>
-          <div className="w-[10rem] flex">
-            <span className="truncate text-xs text-neutral-300">
-              {fetchedMessage ? fetchedMessage.message : ""}
-            </span>
+        <div className="w-full flex gap-x-3">
+          <img
+            src={image ? image : "/profile.jpg"}
+            alt="pic"
+            className="rounded-full h-12 w-12"
+          />
+          <div className=" h-full flex flex-col items-start gap-1">
+            <div> {name}</div>
+            <div className="w-[10rem] flex">
+              <span className="truncate text-xs text-neutral-300">
+                {fetchedMessage ? fetchedMessage.message : ""}
+              </span>
+            </div>
           </div>
         </div>
         <div className="text-xs">{time}</div>

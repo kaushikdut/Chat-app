@@ -9,6 +9,7 @@ import { SocketProvider, useSocket } from "../context/socket";
 const Chat = () => {
   const { setSelectedChat, selectedChat } = useAuthContext();
   const [fetchedUser, setFetchedUser] = useState([]);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const url = import.meta.env.VITE_SERVER;
   const { user } = useAuthContext();
 
@@ -29,8 +30,18 @@ const Chat = () => {
     }
   };
 
+  const handleClick = () => {};
+
   useEffect(() => {
     fetch();
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -38,7 +49,7 @@ const Chat = () => {
       <div className="w-screen h-screen overflow-hidden">
         <div className="w-full h-full flex gap-2 pt-2">
           <Sidebar />
-          <div className="w-[45%] h-full flex flex-col gap-y-1 p-1 bg-neutral-950 overflow-y-auto">
+          <div className="w-full  md:w-[600px] h-full flex flex-col gap-y-1 p-1 bg-neutral-950 overflow-y-auto">
             {fetchedUser?.map((data) => {
               return (
                 data._id !== user.id && (
@@ -53,7 +64,20 @@ const Chat = () => {
               );
             })}
           </div>
-          <div className="w-full">{selectedChat && <SingleChat />}</div>
+          {!isSmallScreen && (
+            <div className="md:w-full">
+              {selectedChat ? (
+                <SingleChat />
+              ) : (
+                <p className=" h-full w-full flex items-center justify-center bg-neutral-900">
+                  Select a chat to start a conversation{" "}
+                </p>
+              )}
+            </div>
+          )}
+          {isSmallScreen && selectedChat && (
+            <div className="fixed inset-0 z-50">{<SingleChat />}</div>
+          )}
         </div>
       </div>
     </SocketProvider>

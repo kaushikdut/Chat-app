@@ -4,6 +4,7 @@ import { useAuthContext } from "../context/context";
 import ScrollableChats from "./scrollableChats";
 import { GoDotFill } from "react-icons/go";
 import { useSocket } from "../context/socket";
+import { IoIosSend } from "react-icons/io";
 
 const SingleChat = () => {
   const inputRef = useRef(null);
@@ -62,7 +63,7 @@ const SingleChat = () => {
   };
 
   const sendMessage = async (e) => {
-    if (e.key === "Enter" && message) {
+    if ((e.key === "Enter" && message) || e.type === "click") {
       try {
         await axios
           .post(
@@ -154,15 +155,22 @@ const SingleChat = () => {
           </div>
           <div className="flex-shrink-0 w-full bg-black p-2">
             <div className="flex items-center gap-x-2">
-              <div className="flex-grow">
+              <div className="flex-grow flex gap-x-3 ">
                 <input
                   ref={inputRef}
-                  className="w-full h-full focus:outline-none"
+                  className="w-full focus:outline-none px-2"
                   onChange={handleChange}
                   value={message}
                   onBlur={handleBlur}
                   onKeyDown={sendMessage}
+                  placeholder="Type your message"
                 />
+                <button
+                  className="border-none hover:outline-none hover:bg-neutral-800"
+                  onClick={sendMessage}
+                >
+                  <IoIosSend />
+                </button>
               </div>
             </div>
           </div>

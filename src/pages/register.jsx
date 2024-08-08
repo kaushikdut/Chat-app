@@ -113,7 +113,7 @@ function Register() {
       className="w-screen h-full flex items-center justify-center"
       style={{
         backgroundImage: "url(bg.jpg)",
-        backgroundSize: "cover", // Adjust background properties as needed
+        backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
@@ -157,7 +157,7 @@ function Register() {
             />
             <span
               role="button"
-              className="text-black absolute top-[10px] right-[10px] "
+              className="text-black absolute top-[10px] right-[10px] select-none"
               onClick={handleViewPassword}
             >
               {viewPassword ? (

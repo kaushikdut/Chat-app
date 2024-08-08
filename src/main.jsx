@@ -24,7 +24,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           pauseOnHover
           theme="dark"
           transition={Bounce}
-          limit={3}
+          limit={1}
         />
       </AuthProvider>
     </BrowserRouter>

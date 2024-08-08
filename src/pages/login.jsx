@@ -40,7 +40,7 @@ function Login() {
           const { token, message, ...other } = response.data;
 
           toast.success(message, {
-            position: "bottom-center",
+            position: "top-right",
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: false,
@@ -140,7 +140,7 @@ function Login() {
             />
             <span
               role="button"
-              className="text-black absolute top-[10px] right-[10px] "
+              className="text-black absolute top-[10px] right-[10px] select-none"
               onClick={handleView}
             >
               {viewPassword ? (

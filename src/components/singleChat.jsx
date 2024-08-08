@@ -1,10 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../context/context";
 import ScrollableChats from "./scrollableChats";
 import { GoDotFill } from "react-icons/go";
 import { useSocket } from "../context/socket";
 import { IoIosSend } from "react-icons/io";
+import debounce from "lodash.debounce";
 
 const SingleChat = () => {
   const inputRef = useRef(null);
@@ -62,32 +63,39 @@ const SingleChat = () => {
     }
   };
 
-  const sendMessage = async (e) => {
-    if ((e.key === "Enter" && message) || e.type === "click") {
+  const sendMessage = async () => {
+    if (message) {
       try {
-        await axios
-          .post(
-            `${url}/message`,
-            {
-              message: message,
-              chatId: selectedChat._id,
+        await axios.post(
+          `${url}/message`,
+          {
+            message: message,
+            chatId: selectedChat._id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
             },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-          .then((response) => {
-            socket.current.emit("new-message", user.id);
-            fetchMessages();
-            setMessage("");
-            console.log(response.data);
-          });
+          }
+        );
+
+        fetchMessages();
+        socket.current.emit("new-message", user.id);
+        setMessage("");
       } catch (error) {
         console.log(error);
       }
     }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
+  };
+
+  const handleClick = (e) => {
+    sendMessage();
   };
 
   const handleChange = (e) => {
@@ -162,12 +170,12 @@ const SingleChat = () => {
                   onChange={handleChange}
                   value={message}
                   onBlur={handleBlur}
-                  onKeyDown={sendMessage}
+                  onKeyDown={handleKeyDown}
                   placeholder="Type your message"
                 />
                 <button
                   className="border-none hover:outline-none hover:bg-neutral-800"
-                  onClick={sendMessage}
+                  onClick={handleClick}
                 >
                   <IoIosSend />
                 </button>

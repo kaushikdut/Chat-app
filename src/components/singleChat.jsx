@@ -5,7 +5,7 @@ import ScrollableChats from "./scrollableChats";
 import { GoDotFill } from "react-icons/go";
 import { useSocket } from "../context/socket";
 import { IoIosSend } from "react-icons/io";
-import debounce from "lodash.debounce";
+import useIsSmallScreen from "../hooks/useSmallScreen";
 
 const SingleChat = () => {
   const inputRef = useRef(null);
@@ -14,12 +14,12 @@ const SingleChat = () => {
   const [fetchedUser, setFetchedUser] = useState();
   const [isTyping, setIsTyping] = useState(false);
   const url = import.meta.env.VITE_SERVER;
-  const { selectedChat, token } = useAuthContext();
+  const { selectedChat, setSelectedChat, token, user } = useAuthContext();
   const [typingUser, setTypingUser] = useState("");
   const [typingTimer, setTypingTimer] = useState(null);
 
-  const { user } = useAuthContext();
   const { socket, onlineUser, isConnected } = useSocket();
+  const isSmallScreen = useIsSmallScreen();
 
   const handleFocus = () => {
     if (inputRef.current) {
@@ -113,6 +113,12 @@ const SingleChat = () => {
     setTypingTimer(newTimer);
   };
 
+  const handleReturn = () => {
+    if (isSmallScreen) {
+      setSelectedChat(null);
+    }
+  };
+
   useEffect(() => {
     handleFocus();
     if (selectedChat) {
@@ -147,16 +153,21 @@ const SingleChat = () => {
     <div className="h-full w-full flex flex-col bg-black">
       {fetchedUser ? (
         <div className="flex flex-col w-full h-full">
-          <div className="flex-shrink-0 py-5 px-2 text-start">
-            {fetchedUser?.name}
-            {onlineUser.some((user) => user.userId === fetchedUser._id) && (
-              <p className="text-xs flex items-center text-green-700">
-                <span>
-                  <GoDotFill fill="green" />
-                </span>
-                {typingUser === selectedChat._id ? "typing..." : "online"}
-              </p>
-            )}
+          <div className="flex-shrink-0 py-5 px-2 text-start flex gap-x-2 items-center justify-start">
+            <div onClick={handleReturn}>
+              <img src="/profile.jpg" className="w-11 h-11 rounded-full" />
+            </div>
+            <div>
+              {fetchedUser?.name}
+              {onlineUser.some((user) => user.userId === fetchedUser._id) && (
+                <p className="text-xs flex items-center text-green-700">
+                  <span>
+                    <GoDotFill fill="green" />
+                  </span>
+                  {typingUser === selectedChat._id ? "typing..." : "online"}
+                </p>
+              )}
+            </div>
           </div>
           <div className="flex-grow p-2 overflow-auto bg-neutral-950">
             <ScrollableChats messages={fetchedMessage} />

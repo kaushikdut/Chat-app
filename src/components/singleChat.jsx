@@ -6,6 +6,8 @@ import { GoDotFill } from "react-icons/go";
 import { useSocket } from "../context/socket";
 import { IoIosSend } from "react-icons/io";
 import useIsSmallScreen from "../hooks/useSmallScreen";
+import Picker from "emoji-picker-react";
+import { BsEmojiGrin } from "react-icons/bs";
 
 const SingleChat = () => {
   const inputRef = useRef(null);
@@ -17,6 +19,7 @@ const SingleChat = () => {
   const { selectedChat, setSelectedChat, token, user } = useAuthContext();
   const [typingUser, setTypingUser] = useState("");
   const [typingTimer, setTypingTimer] = useState(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const { socket, onlineUser, isConnected } = useSocket();
   const isSmallScreen = useIsSmallScreen();
@@ -82,6 +85,7 @@ const SingleChat = () => {
         fetchMessages();
         socket.current.emit("new-message", user.id);
         setMessage("");
+        setShowEmojiPicker(false);
       } catch (error) {
         console.log(error);
       }
@@ -94,8 +98,12 @@ const SingleChat = () => {
     }
   };
 
-  const handleClick = (e) => {
+  const handleClick = () => {
     sendMessage();
+  };
+
+  const handleEmojiSelect = (emojiObject) => {
+    setMessage((prevMessage) => prevMessage + emojiObject.emoji);
   };
 
   const handleChange = (e) => {
@@ -120,6 +128,7 @@ const SingleChat = () => {
   };
 
   useEffect(() => {
+    setShowEmojiPicker(false);
     handleFocus();
     if (selectedChat) {
       setFetchedUser(selectedChat);
@@ -150,17 +159,17 @@ const SingleChat = () => {
   }, [selectedChat]);
 
   return (
-    <div className="h-full w-full flex flex-col bg-black">
+    <div className="h-full w-full flex flex-col bg-neutral-50 text-neutral-500 rounded-xl shadow-xl shadow-blue-200 pl-3">
       {fetchedUser ? (
         <div className="flex flex-col w-full h-full">
-          <div className="flex-shrink-0 py-5 px-2 text-start flex gap-x-2 items-center justify-start">
+          <div className="flex-shrink-0 py-5 px-2 text-start flex gap-x-2 items-center justify-start border-b-[1px]">
             <div onClick={handleReturn}>
               <img src="/profile.jpg" className="w-11 h-11 rounded-full" />
             </div>
             <div>
               {fetchedUser?.name}
               {onlineUser.some((user) => user.userId === fetchedUser._id) && (
-                <p className="text-xs flex items-center text-green-700">
+                <p className="text-xs flex items-center text-neutral-400">
                   <span>
                     <GoDotFill fill="green" />
                   </span>
@@ -169,23 +178,35 @@ const SingleChat = () => {
               )}
             </div>
           </div>
-          <div className="flex-grow p-2 overflow-auto bg-neutral-950">
+          <div className="flex-grow p-2 overflow-auto bg-neutral-50">
             <ScrollableChats messages={fetchedMessage} />
           </div>
-          <div className="flex-shrink-0 w-full bg-black p-2">
+          <div className="flex-shrink-0 w-full bg-slate-100 p-2 rounded-xl">
             <div className="flex items-center gap-x-2">
               <div className="flex-grow flex gap-x-3 ">
                 <input
                   ref={inputRef}
-                  className="w-full focus:outline-none px-2"
+                  className="w-full bg-slate-100 focus:outline-none px-2"
                   onChange={handleChange}
                   value={message}
                   onBlur={handleBlur}
                   onKeyDown={handleKeyDown}
                   placeholder="Type your message"
                 />
+
+                <div className="relative flex items-center">
+                  <BsEmojiGrin
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  />
+                  {showEmojiPicker && (
+                    <div className="fixed right-1 bottom-14">
+                      <Picker onEmojiClick={handleEmojiSelect} />
+                    </div>
+                  )}
+                </div>
+
                 <button
-                  className="border-none hover:outline-none hover:bg-neutral-800"
+                  className="border-none hover:outline-none bg-slate-100 hover:bg-slate-200"
                   onClick={handleClick}
                 >
                   <IoIosSend />

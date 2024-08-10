@@ -37,10 +37,10 @@ const Chat = () => {
 
   return (
     <SocketProvider>
-      <div className="w-screen h-screen overflow-hidden">
+      <div className="w-screen p-5 h-screen overflow-hidden bg-slate-100">
         <div className="w-full h-full flex gap-2 pt-1">
           <Sidebar />
-          <div className="w-full md:w-[600px] h-full flex flex-col gap-y-1 p-1 bg-neutral-950 overflow-y-auto">
+          <div className="w-full h-fit md:w-[600px] bg-neutral-50 flex flex-col overflow-y-auto rounded-xl shadow-xl px-6 shadow-blue-200">
             {fetchedUser?.map((data) => {
               return (
                 data._id !== user.id && (
@@ -60,7 +60,7 @@ const Chat = () => {
               {selectedChat ? (
                 <SingleChat />
               ) : (
-                <p className=" h-full w-full flex items-center justify-center bg-neutral-900">
+                <p className=" h-full w-full flex items-center justify-center text-neutral-600">
                   Select a chat to start a conversation{" "}
                 </p>
               )}

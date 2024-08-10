@@ -4,9 +4,9 @@ import { useAuthContext } from "../context/context";
 import { toast } from "react-toastify";
 import { useSocket } from "../context/socket";
 import { IoMdMenu } from "react-icons/io";
+import { IoLogOut } from "react-icons/io5";
 
 const Sidebar = () => {
-  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const { setUser, setSelectedChat, user } = useAuthContext();
   const { socket } = useSocket();
@@ -26,24 +26,22 @@ const Sidebar = () => {
   };
 
   return (
-    <div className=" w-12 h-full flex flex-col bg-neutral-950 items-center justify-end py-4">
-      <div onClick={() => setOpen((prev) => !prev)}>
-        <IoMdMenu className="h-8 w-8 md:h-6 md:w-6" />
-      </div>
-      {open && (
-        <div className="bg-neutral-800 w-[150px] h-auto py-4 px-2 flex flex-col items-start absolute left-10 rounded-lg gap-y-2">
-          <div className="flex flex-col items-start w-full gap-y-3 px-2">
-            <img src="/profile.jpg" className="w-11 h-11 rounded-full" />
-            <p>{user.name}</p>
+    <div className=" w-16 md:w-28 h-full flex flex-col bg-purple-700 items-center justify-end py-4 rounded-xl">
+      <div className=" h-[60%]">
+        <div className="group relative">
+          <img
+            src="/profile.jpg"
+            className="w-11 h-11 rounded-full cursor-pointer "
+          />
+          <div className="w-[150px] h-fit py-3 absolute group bg-neutral-100 hidden text-neutral-700 shadow-2xl shadow-blue-200 group-hover:block bottom-[30px] left-[40px] rounded-r-xl rounded-t-xl cursor-pointer select-none">
+            {user.name}
           </div>
-          <button
-            className="hover:bg-neutral-950 border-none hover:border-none hover:outline-none"
-            onClick={handleLogout}
-          >
-            LOGOUT
-          </button>
         </div>
-      )}
+      </div>
+
+      <div onClick={handleLogout}>
+        <IoLogOut className="h-10 w-10 cursor-pointer" />
+      </div>
     </div>
   );
 };

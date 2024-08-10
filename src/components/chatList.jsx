@@ -45,7 +45,7 @@ const ChatList = ({ id, name, image, onClick }) => {
 
   return (
     <div
-      className="w-full h-[5rem] flex flex-row items-center justify-evenly p-6 bg-neutral-900 cursor-pointer select-none hover:bg-neutral-800"
+      className="w-full h-[5rem] flex flex-row items-center justify-evenly bg-neutral-50 cursor-pointer select-none hover:bg-neutral-100 border-b-[1px] border-neutral-300 text-neutral-600 last:border-b-0"
       onClick={onClick}
     >
       <div className="w-full flex gap-x-3 pr-3 justify-center items-center">
@@ -58,7 +58,7 @@ const ChatList = ({ id, name, image, onClick }) => {
           <div className=" h-full flex flex-col items-start gap-1">
             <div> {name}</div>
             <div className="w-[10rem] flex">
-              <span className="truncate text-xs text-neutral-300">
+              <span className="truncate text-xs text-neutral-400">
                 {fetchedMessage ? fetchedMessage.message : ""}
               </span>
             </div>

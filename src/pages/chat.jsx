@@ -61,7 +61,7 @@ const Chat = () => {
                 <SingleChat />
               ) : (
                 <p className=" h-full w-full flex items-center justify-center text-neutral-600">
-                  Select a chat to start a conversation{" "}
+                  Select a chat to start a conversation
                 </p>
               )}
             </div>

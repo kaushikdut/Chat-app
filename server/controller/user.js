@@ -8,19 +8,19 @@ export const login = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).send({ message: "Invalid credentials provided!" });
+      return res.status(400).send({ message: "Invalid credentials provided!" });
     }
 
     const comparedPassword = await bcrypt.compare(password, user.password);
     if (!comparedPassword) {
-      res.status(400).send({ message: "Wrong password!" });
+      return res.status(400).send({ message: "Wrong password!" });
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "24h",
     });
 
-    res.status(200).send({
+    return res.status(200).send({
       message: "Successfully logged in",
       token,
       id: user._id,
@@ -29,7 +29,7 @@ export const login = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error!");
+    return res.status(500).send("Server error!");
   }
 };
 
@@ -63,7 +63,7 @@ export const register = async (req, res) => {
       expiresIn: "24h",
     });
 
-    res.status(200).send({
+    return res.status(200).send({
       message: "User registered successfully!",
       token,
       id: newUser._id,
@@ -72,27 +72,17 @@ export const register = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error!");
+    return res.status(500).send("Server error!");
   }
-};
-
-export const searchUser = async (req, res) => {
-  const { search } = req.query;
-
-  const user = await User.find({
-    name: { $regex: search, $options: "i" },
-  }).select("name _id email");
-
-  res.status(200).json(user);
 };
 
 export const getUsers = async (req, res) => {
   try {
     const user = await User.find({}, "-password");
-    res.status(200).json(user); // Use res.status(200).json(user) to send status and JSON together
+    return res.status(200).json(user);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -100,9 +90,9 @@ export const getUser = async (req, res) => {
   try {
     const { userId } = req.params;
     const user = await User.findById(userId, "-password");
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };

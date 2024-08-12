@@ -117,14 +117,14 @@ function Register() {
         backgroundPosition: "center",
       }}
     >
-      <div className="w-[450px] h-[600px] bg-white flex flex-col items-center rounded-md py-6">
+      <div className="w-[300px] md:w-[450px] h-[600px] bg-white flex flex-col items-center rounded-md py-6">
         <div className="w-full h-[18rem] flex items-center justify-center">
           <h1 className="text-black font-semibold">Register</h1>
         </div>
         <div className="w-full h-full flex flex-col py-6 gap-y-5 items-center">
-          <div className="relative z-10 ">
+          <div className="relative z-10 w-full px-6">
             <input
-              className="w-[25rem] h-10 px-2 text-black bg-transparent border-b-[1px] border-gray-200  focus:border-black focus:outline-none transition duration-1000 ease-in-out delay-200"
+              className="w-full h-10 px-2 text-black bg-transparent border-b-[1px] border-gray-200  focus:border-black focus:outline-none transition duration-1000 ease-in-out delay-200"
               placeholder="Username"
               name="name"
               type="text"
@@ -133,9 +133,9 @@ function Register() {
               onKeyDown={handleKeydown}
             />
           </div>
-          <div className="relative z-10 ">
+          <div className="relative z-10 w-full px-6">
             <input
-              className="w-[25rem] h-10 px-2 text-black bg-transparent border-b-[1px] border-gray-200  focus:border-black focus:outline-none transition duration-1000 ease-in-out delay-200"
+              className="w-full h-10 px-2 text-black bg-transparent border-b-[1px] border-gray-200  focus:border-black focus:outline-none transition duration-1000 ease-in-out delay-200"
               placeholder="Email"
               name="email"
               type="email"
@@ -145,9 +145,9 @@ function Register() {
             />
           </div>
 
-          <div className="relative z-10">
+          <div className="relative z-10 w-full px-6">
             <input
-              className="w-[25rem] h-10 px-2 text-black bg-transparent border-b-[1px] border-gray-200  focus:border-black focus:outline-none transition duration-1000 ease-in-out delay-200"
+              className="w-full h-10 px-2 text-black bg-transparent border-b-[1px] border-gray-200  focus:border-black focus:outline-none transition duration-1000 ease-in-out delay-200"
               placeholder="Password"
               name="password"
               type={viewPassword ? "text" : "password"}
@@ -167,9 +167,9 @@ function Register() {
               )}
             </span>
           </div>
-          <div className="relative z-10">
+          <div className="relative z-10 w-full px-6">
             <input
-              className="w-[25rem] h-10 px-2 text-black bg-transparent border-b-[1px] border-gray-200  focus:border-black focus:outline-none transition duration-1000 ease-in-out delay-200"
+              className="w-full h-10 px-2 text-black bg-transparent border-b-[1px] border-gray-200  focus:border-black focus:outline-none transition duration-1000 ease-in-out delay-200"
               placeholder="Confirm Password"
               name="confirmedPassword"
               type={viewPasswordConfrim ? "text" : "password"}

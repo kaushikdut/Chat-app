@@ -90,7 +90,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new-message", async (message, sender, receiver) => {
-    console.log("message:", message, "sender:", sender, "receiver:", receiver);
     const result = await sendMessage(message, sender, receiver);
 
     if (result.status === 200) {

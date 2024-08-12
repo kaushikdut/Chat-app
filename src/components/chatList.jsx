@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../context/context";
 import axios from "axios";
 import { useSocket } from "../context/socket";
+import { useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
 const ChatList = ({ id, name, image, onClick }) => {
   let time;
-  const { token } = useAuthContext();
+  const { token, user, setUser, setSelectedChat } = useAuthContext();
   const [fetchedMessage, setFetchedMessage] = useState(null);
-  const [content, setContent] = useState("");
   const url = import.meta.env.VITE_SERVER;
   const { socket } = useSocket();
+  const navigate = useNavigate();
 
   const fetchMessages = async () => {
     try {
@@ -23,7 +25,31 @@ const ChatList = ({ id, name, image, onClick }) => {
           setFetchedMessage(response.data);
         });
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.message);
+      if (error.response.data.logout) {
+        toast.error("Token expired!", {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+        toast.clearWaitingQueue();
+
+        setTimeout(() => {
+          socket.current.emit("removeUser", user.id);
+          socket.current.disconnect();
+          setUser(null);
+          setSelectedChat(null);
+
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          navigate("/login");
+        }, 3000);
+      }
     }
   };
 
@@ -38,9 +64,14 @@ const ChatList = ({ id, name, image, onClick }) => {
   }
 
   useEffect(() => {
-    socket.current.on("new-message", () => {
-      fetchMessages();
+    socket.current.on("message-received", (message) => {
+      if (message.sender._id === id) {
+        setFetchedMessage(message);
+      }
     });
+    return () => {
+      socket.current.off("message-received");
+    };
   }, []);
 
   return (
@@ -59,7 +90,7 @@ const ChatList = ({ id, name, image, onClick }) => {
             <div> {name}</div>
             <div className="w-[10rem] flex">
               <span className="truncate text-xs text-neutral-400">
-                {fetchedMessage ? fetchedMessage.message : ""}
+                {fetchedMessage?.message}
               </span>
             </div>
           </div>

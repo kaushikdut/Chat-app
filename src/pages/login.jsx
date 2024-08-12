@@ -38,22 +38,9 @@ function Login() {
         .post(`${url}/auth/login`, formdata)
         .then((response) => {
           const { token, message, ...other } = response.data;
-
-          toast.success(message, {
-            position: "top-right",
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-            transition: Bounce,
-          });
-          toast.clearWaitingQueue();
-
           setToken(token);
           setUser(other);
-          setTimeout(() => navigate("/"), 4000);
+          navigate("/");
         })
         .catch((error) => {
           console.log(error?.response);

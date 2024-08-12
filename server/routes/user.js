@@ -1,7 +1,5 @@
 import express from "express";
 import { getUser, getUsers, login, register } from "../controller/user.js";
-import chatRouter from "./chat.js";
-import authenticateUser from "../middleware/auth.js";
 
 const router = express.Router();
 

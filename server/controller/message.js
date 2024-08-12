@@ -1,11 +1,7 @@
-import Chat from "../models/chat.js";
 import Message from "../models/message.js";
-import User from "../models/user.js";
 
-export const sendMessage = async (req, res) => {
-  const { message, chatId } = req.body;
-
-  if (!message || !chatId) {
+export const sendMessage = async (message, sender, receiver) => {
+  if (!message || !sender || !receiver) {
     console.log("Invalid data passed into request");
 
     return res
@@ -15,19 +11,18 @@ export const sendMessage = async (req, res) => {
 
   try {
     let newMessage = {
-      sender: req.user.id,
-      message: message,
-      receiver: chatId,
+      sender,
+      message,
+      receiver,
     };
 
     let m = await Message.create(newMessage);
 
     m = await m.populate("sender", "name email");
     m = await m.populate("receiver", "-password");
-
-    res.status(200).json(m);
+    return { message: m, status: 200 };
   } catch (error) {
-    res.status(400).json(error.message);
+    return { error: error.message, status: 400 };
   }
 };
 

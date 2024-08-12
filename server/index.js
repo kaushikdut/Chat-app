@@ -5,11 +5,11 @@ import router from "./routes/user.js";
 import bodyParser from "body-parser";
 import mongoDBConnect from "./mongoDB/connection.js";
 import authenticateUser from "./middleware/auth.js";
-import chatRouter from "./routes/chat.js";
 import messageRouter from "./routes/message.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { instrument } from "@socket.io/admin-ui";
+import { sendMessage } from "./controller/message.js";
 
 dotenv.config();
 const app = express();
@@ -26,7 +26,6 @@ app.use(
 );
 
 app.use("/", router);
-app.use("/chat", authenticateUser, chatRouter);
 app.use("/message", authenticateUser, messageRouter);
 
 mongoDBConnect();
@@ -90,8 +89,16 @@ io.on("connection", (socket) => {
     socket.in(room).emit("stop-typing");
   });
 
-  socket.on("new-message", (room) => {
-    socket.broadcast.to(room).emit("new-message");
+  socket.on("new-message", async (message, sender, receiver) => {
+    console.log("message:", message, "sender:", sender, "receiver:", receiver);
+    const result = await sendMessage(message, sender, receiver);
+
+    if (result.status === 200) {
+      socket.emit("message-sent", result.message);
+      socket.to(receiver).emit("message-received", result.message);
+    } else {
+      socket.emit("error", result.error);
+    }
   });
 
   socket.on("disconnect", () => {

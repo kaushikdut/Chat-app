@@ -69,21 +69,20 @@ const SingleChat = () => {
   const sendMessage = async () => {
     if (message) {
       try {
-        await axios.post(
-          `${url}/message`,
-          {
-            message: message,
-            chatId: selectedChat._id,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        // await axios.post(
+        //   `${url}/message`,
+        //   {
+        //     message: message,
+        //     chatId: selectedChat._id,
+        //   },
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${token}`,
+        //     },
+        //   }
+        // );
 
-        fetchMessages();
-        socket.current.emit("new-message", user.id);
+        socket.current.emit("new-message", message, user.id, selectedChat._id);
         setMessage("");
         setShowEmojiPicker(false);
       } catch (error) {
@@ -150,11 +149,27 @@ const SingleChat = () => {
       setTypingUser("");
     });
 
-    socket.current.on("new-message", () => fetchMessages());
+    socket.current.on("message-sent", (message) => {
+      setFetchedMessage((prev) => [...prev, message]);
+    });
+    socket.current.on("message-received", (message) => {
+      if (
+        message.receiver._id === user.id &&
+        message.sender._id === selectedChat._id
+      ) {
+        setFetchedMessage((prev) => [...prev, message]);
+      }
+    });
+    socket.current.on("error", (error) => {
+      console.log(error);
+    });
 
     return () => {
       socket.current.off("typing");
       socket.current.off("stop-typing");
+      socket.current.off("message-sent");
+      socket.current.off("message-received");
+      socket.current.off("error");
     };
   }, [selectedChat]);
 

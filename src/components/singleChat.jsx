@@ -8,6 +8,7 @@ import { IoIosSend } from "react-icons/io";
 import useIsSmallScreen from "../hooks/useSmallScreen";
 import Picker from "emoji-picker-react";
 import { BsEmojiGrin } from "react-icons/bs";
+import LoadingAnimation from "./loadingAnimation";
 
 const SingleChat = () => {
   const inputRef = useRef(null);
@@ -20,6 +21,7 @@ const SingleChat = () => {
   const [typingUser, setTypingUser] = useState("");
   const [typingTimer, setTypingTimer] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { socket, onlineUser, isConnected } = useSocket();
   const isSmallScreen = useIsSmallScreen();
@@ -51,6 +53,8 @@ const SingleChat = () => {
   };
 
   const fetchMessages = async () => {
+    if (!selectedChat) return;
+    setIsLoading(true);
     try {
       await axios
         .get(`${url}/message/${selectedChat._id}`, {
@@ -63,25 +67,14 @@ const SingleChat = () => {
         });
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(true);
     }
   };
 
   const sendMessage = async () => {
     if (message) {
       try {
-        // await axios.post(
-        //   `${url}/message`,
-        //   {
-        //     message: message,
-        //     chatId: selectedChat._id,
-        //   },
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${token}`,
-        //     },
-        //   }
-        // );
-
         socket.current.emit("new-message", message, user.id, selectedChat._id);
         setMessage("");
         setShowEmojiPicker(false);
@@ -194,7 +187,11 @@ const SingleChat = () => {
             </div>
           </div>
           <div className="flex-grow p-2 overflow-auto bg-neutral-50">
-            <ScrollableChats messages={fetchedMessage} />
+            {isLoading ? (
+              <LoadingAnimation />
+            ) : (
+              <ScrollableChats messages={fetchedMessage} />
+            )}
           </div>
           <div className="flex-shrink-0 w-full bg-slate-100 p-2 rounded-xl">
             <div className="flex items-center gap-x-2">

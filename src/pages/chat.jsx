@@ -6,6 +6,8 @@ import SingleChat from "../components/singleChat";
 import Sidebar from "../components/sidebar";
 import { SocketProvider, useSocket } from "../context/socket";
 import useIsSmallScreen from "../hooks/useSmallScreen";
+import LottieAnimation from "../components/loadingAnimation";
+import Header from "../components/header";
 
 const Chat = () => {
   const { setSelectedChat, selectedChat } = useAuthContext();
@@ -40,20 +42,32 @@ const Chat = () => {
       <div className="w-screen p-5 h-screen overflow-hidden bg-slate-100">
         <div className="w-full h-full flex gap-2 pt-1">
           <Sidebar />
-          <div className="w-full h-fit md:w-[600px] bg-neutral-50 flex flex-col overflow-y-auto rounded-xl shadow-xl px-6 shadow-blue-200">
-            {fetchedUser?.map((data) => {
-              return (
-                data._id !== user.id && (
-                  <ChatList
-                    name={data.name}
-                    id={data._id}
-                    key={data._id}
-                    image={data.picture}
-                    onClick={() => setSelectedChat(data)}
-                  />
-                )
-              );
-            })}
+          <div className="w-full h-fit md:w-[600px]">
+            <Header />
+            <div className="w-full h-full bg-neutral-50 flex flex-col overflow-y-auto rounded-xl shadow-xl px-6 shadow-blue-200">
+              <h2 className="text-black text-2xl font-bold text-start mt-3 border-b-2">
+                People
+              </h2>
+              {fetchedUser?.length > 0 ? (
+                fetchedUser?.map((data) => {
+                  return (
+                    data._id !== user.id && (
+                      <ChatList
+                        name={data.name}
+                        id={data._id}
+                        key={data._id}
+                        image={data.picture}
+                        onClick={() => setSelectedChat(data)}
+                      />
+                    )
+                  );
+                })
+              ) : (
+                <h3 className="w-full h-[200px] text-lg text-neutral-700 flex items-center justify-center">
+                  No users Found
+                </h3>
+              )}
+            </div>
           </div>
           {!isSmallScreen && (
             <div className="md:w-full">

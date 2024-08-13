@@ -13,7 +13,7 @@ const LoadingAnimation = () => {
   };
 
   return (
-    <div className="w-full h-full pointer-events-none">
+    <div className="w-full h-full pointer-events-none flex overflow-hidden">
       <Lottie options={defaultOptions} height={400} width={400} />{" "}
     </div>
   );

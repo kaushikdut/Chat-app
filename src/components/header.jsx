@@ -3,10 +3,12 @@ import React from "react";
 const Header = () => {
   return (
     <div className="w-full text-white rounded-tr-full rounded-l-full flex flex-col bg-purple-700  text-start py-3 px-6 mb-5">
-      <h1 className="w-fit text-3xl bg-white text-purple-700 pr-3 rounded-lg">
+      <h1 className="w-fit text-2xl md:text-3xl bg-white text-purple-700 pr-3 rounded-lg">
         MERN CHURIAN
       </h1>
-      <span className="text-xs pl-5">Where Conversations Meet Technology</span>
+      <span className="md:text-xs pl-5 text-[10px]">
+        Where Conversations Meet Technology
+      </span>
     </div>
   );
 };

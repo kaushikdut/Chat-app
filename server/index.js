@@ -48,17 +48,13 @@ instrument(io, {
 let onlineUsers = [];
 
 io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
-
   socket.emit("connected");
 
   socket.on("setup", (userDataId) => {
     socket.join(userDataId);
-    console.log(userDataId + " connected");
   });
 
   socket.on("join-chat", (room) => {
-    console.log(room + " joined");
     socket.join(room);
   });
   socket.on("leave-chat", (room) => {

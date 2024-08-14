@@ -48,7 +48,7 @@ const Chat = () => {
               <h2 className="text-black text-2xl font-bold text-start mt-3 border-b-2">
                 People
               </h2>
-              {fetchedUser?.length < 2 ? (
+              {fetchedUser?.length > 1 ? (
                 fetchedUser?.map((data) => {
                   return (
                     data._id !== user.id && (
